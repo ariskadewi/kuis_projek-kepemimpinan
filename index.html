@@ -78,7 +78,6 @@
             overflow-x: hidden;
         }
 
-        /* Glassmorphism Styles */
         .glass-card {
             background: rgba(20, 83, 45, 0.45);
             backdrop-filter: blur(16px);
@@ -94,7 +93,6 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
         }
 
-        /* Floating Leaves Animation Canvas */
         #leaf-canvas {
             position: fixed;
             top: 0;
@@ -114,7 +112,6 @@
             filter: drop-shadow(0 0 12px #f59e0b);
         }
 
-        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -164,7 +161,6 @@
 </head>
 <body class="relative flex flex-col justify-between items-center min-h-screen p-4 sm:p-6 md:p-8">
 
-    <!-- Canvas Background Dedaunan Berjatuhan -->
     <canvas id="leaf-canvas"></canvas>
 
     <!-- Header App -->
@@ -194,9 +190,9 @@
                 <span class="inline-block px-4 py-1.5 bg-brand-500/20 text-brand-300 border border-brand-500/40 rounded-full text-xs font-bold tracking-wide uppercase mb-3">
                     <i class="fa-solid fa-ticket mr-1.5"></i> Kuis & Undian Pohon Keberuntungan
                 </span>
-                <h2 class="text-2xl sm:text-3xl font-black text-white mb-2">Uji Pengetahuanmu & Memenangkan Pohon!</h2>
+                <h2 class="text-2xl sm:text-3xl font-black text-white mb-2">Uji Pengetahuanmu & Menangkan Hadiah Eco!</h2>
                 <p class="text-sm text-brand-100/80 leading-relaxed">
-                    Jawab 5 pertanyaan seputar sampah & lingkungan. Setelah itu, petik buah keberuntungan untuk klaim hadiah bibit pohon atau voucher spesial!
+                    Jawab 5 pertanyaan seputar sampah & lingkungan. Setelah itu, petik buah keberuntungan untuk kesempatan memenangkan paket hadiah eco pilihanmu!
                 </p>
             </div>
 
@@ -219,9 +215,9 @@
 
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-brand-200 mb-2">
-                        <i class="fa-solid fa-tree mr-1"></i> Pilih Pohon Impian Yang Ingin Kamu Bawa Pulang:
+                        <i class="fa-solid fa-gift mr-1"></i> Pilih Opsi Hadiah Target Kamu:
                     </label>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5" id="tree-select-container">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5" id="prize-select-container">
                         <!-- Populated dynamically via JS -->
                     </div>
                 </div>
@@ -238,7 +234,6 @@
 
         <!-- ================= TAHAP 2: KUIS GAME ================= -->
         <section id="step-quiz" class="hidden glass-card rounded-3xl p-6 sm:p-8 shadow-2xl transition-all duration-500 relative overflow-hidden">
-            <!-- Progress & Timer Bar -->
             <div class="flex justify-between items-center mb-4">
                 <div class="flex items-center space-x-2">
                     <span id="quiz-question-counter" class="text-xs font-extrabold bg-brand-500/30 text-brand-200 border border-brand-500/50 px-3 py-1 rounded-full">
@@ -249,19 +244,16 @@
                     </span>
                 </div>
 
-                <!-- Timer Ring/Box -->
                 <div class="flex items-center space-x-1.5 text-accent-gold font-mono font-bold text-sm bg-black/30 px-3 py-1 rounded-xl border border-white/10">
                     <i class="fa-solid fa-stopwatch animate-spin" style="animation-duration: 4s;"></i>
                     <span id="quiz-timer">15s</span>
                 </div>
             </div>
 
-            <!-- Progress Bar Line -->
             <div class="w-full bg-brand-900/80 h-2.5 rounded-full overflow-hidden mb-6 border border-white/10">
                 <div id="quiz-progress-bar" class="bg-gradient-to-r from-brand-500 to-accent-gold h-full w-0 transition-all duration-300"></div>
             </div>
 
-            <!-- Question Card -->
             <div id="quiz-box" class="space-y-6">
                 <div>
                     <span id="quiz-category" class="text-xs font-bold text-accent-gold uppercase tracking-wider block mb-1">Kategori</span>
@@ -270,12 +262,8 @@
                     </h3>
                 </div>
 
-                <!-- Options Grid -->
-                <div id="quiz-options-container" class="grid grid-cols-1 gap-3">
-                    <!-- Dynamic Answer Buttons -->
-                </div>
+                <div id="quiz-options-container" class="grid grid-cols-1 gap-3"></div>
 
-                <!-- Explanation / Fun Fact Box (Initially Hidden) -->
                 <div id="quiz-feedback-box" class="hidden p-4 rounded-2xl bg-brand-900/90 border border-brand-400/50 text-xs sm:text-sm space-y-2 animate-float">
                     <div class="flex items-center space-x-2 font-extrabold text-white" id="feedback-title">
                         <i class="fa-solid fa-lightbulb text-accent-gold"></i>
@@ -299,17 +287,14 @@
                 </span>
                 <h2 class="text-2xl sm:text-3xl font-black text-white mt-2">Pohon Keberuntungan EcoQuest</h2>
                 <p id="raffle-subtitle" class="text-xs sm:text-sm text-brand-100/90 mt-1">
-                    Skor Kuis Anda: <span id="final-score-val" class="font-extrabold text-accent-gold text-base">100</span>! Klik/sentuh salah satu buah emas pada pohon di bawah untuk klaim undian hadiahmu!
+                    Skor Kuis Anda: <span id="final-score-val" class="font-extrabold text-accent-gold text-base">100</span>! Ketuk salah satu buah emas di pohon untuk mengetahui keberuntunganmu!
                 </p>
             </div>
 
             <!-- Pohon Interaktif Area -->
             <div class="relative w-full max-w-md mx-auto my-6 h-64 sm:h-72 bg-gradient-to-b from-brand-900/40 to-brand-950/80 rounded-3xl border border-brand-500/30 overflow-hidden flex items-end justify-center">
-                <!-- SVG Tree Graphic -->
                 <svg viewBox="0 0 200 200" class="w-full h-full object-contain filter drop-shadow-xl">
-                    <!-- Trunk -->
                     <path d="M 90,200 L 95,120 Q 98,90 100,70 Q 102,90 105,120 L 110,200 Z" fill="#78350f" />
-                    <!-- Foliage Layers -->
                     <circle cx="100" cy="80" r="55" fill="#15803d" opacity="0.9" />
                     <circle cx="70" cy="95" r="40" fill="#16a34a" opacity="0.95" />
                     <circle cx="130" cy="95" r="40" fill="#16a34a" opacity="0.95" />
@@ -317,15 +302,28 @@
                     <circle cx="85" cy="50" r="25" fill="#4ade80" opacity="0.6" />
                 </svg>
 
-                <!-- Interactive Fruits (Buah Berhadiah) Overlaid on Tree -->
-                <div id="tree-fruits-container" class="absolute inset-0 pointer-events-auto">
-                    <!-- Fruits inserted dynamically by JS -->
+                <div id="tree-fruits-container" class="absolute inset-0 pointer-events-auto"></div>
+            </div>
+
+            <!-- Modal Pop-up Jika Dapa ZONK -->
+            <div id="zonk-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                <div class="glass-card-light max-w-sm w-full p-6 rounded-3xl text-center space-y-4 animate-shake">
+                    <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto text-red-500 text-3xl">
+                        <i class="fa-solid fa-face-frown"></i>
+                    </div>
+                    <h3 class="font-black text-xl text-gray-900">Zonk! Sayang Sekali...</h3>
+                    <p class="text-xs text-gray-600 leading-relaxed">
+                        Buah yang kamu petik belum beruntung kali ini. Jangan menyerah, coba petik buah lainnya!
+                    </p>
+                    <button onclick="closeZonkModal()" class="w-full py-3 bg-gradient-to-r from-red-500 to-rose-600 text-white font-bold rounded-xl shadow-lg hover:from-red-600 hover:to-rose-700 transition-all">
+                        Petik Buah Lain
+                    </button>
                 </div>
             </div>
 
             <div class="space-y-3">
                 <p class="text-xs text-brand-200 italic animate-pulse">
-                    ✨ Setiap buah mengandung hadiah menarik! Ketuk buah impianmu.
+                    ✨ Setiap buah menyimpan kejutan acak (Pot & Tanaman, Pot Saja, Kompos, atau Zonk!).
                 </p>
                 <button id="btn-auto-pick" onclick="pickRandomFruit()" class="px-6 py-2.5 bg-brand-500/20 hover:bg-brand-500/40 text-brand-200 border border-brand-500/40 font-semibold text-xs rounded-full transition-all">
                     <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Pilihkan Acak Untuk Saya
@@ -336,9 +334,7 @@
 
         <!-- ================= TAHAP 4: TIKET DIGITAL / PEMENANG ================= -->
         <section id="step-ticket" class="hidden transition-all duration-500">
-            <!-- Digital Printable Voucher Card -->
             <div id="printable-ticket" class="glass-card-light rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden text-brand-900 border-2 border-accent-gold">
-                <!-- Decorative Badge -->
                 <div class="absolute -top-10 -right-10 w-32 h-32 bg-accent-gold/20 rounded-full flex items-end justify-start p-6 pointer-events-none">
                     <i class="fa-solid fa-award text-accent-gold text-4xl"></i>
                 </div>
@@ -359,7 +355,6 @@
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                    <!-- Left Column: User details -->
                     <div class="sm:col-span-2 space-y-3">
                         <div>
                             <span class="text-[10px] font-bold text-brand-600 uppercase tracking-wider block">Nama Pemegang Tiket</span>
@@ -376,13 +371,12 @@
                             </div>
                         </div>
 
-                        <!-- Prize Highlight Box -->
                         <div class="p-3 bg-gradient-to-r from-brand-50 to-amber-50 rounded-2xl border border-accent-gold/40">
                             <span class="text-[10px] font-extrabold text-accent-warm uppercase tracking-wider block flex items-center gap-1">
                                 <i class="fa-solid fa-gift"></i> Hadiah Undian Dimenangkan:
                             </span>
                             <p id="ticket-prize-name" class="font-black text-base text-brand-900 mt-0.5">
-                                Bibit Pohon Mangga + Pot Eco
+                                Paket Pot & Tanaman
                             </p>
                             <p id="ticket-prize-desc" class="text-xs text-brand-700 mt-1">
                                 Silakan tunjukkan tiket ini ke Panitia Booth EcoQuest untuk pengambilan fisik hadiah.
@@ -390,7 +384,6 @@
                         </div>
                     </div>
 
-                    <!-- Right Column: QR Code -->
                     <div class="flex flex-col items-center justify-center p-3 bg-white rounded-2xl border border-brand-200 shadow-inner">
                         <div id="qrcode-box" class="mb-2"></div>
                         <span class="text-[9px] font-mono text-brand-600 text-center">Scan Verifikasi Panitia</span>
@@ -405,7 +398,6 @@
                 </div>
             </div>
 
-            <!-- Action Buttons for Booth / User -->
             <div class="mt-6 flex justify-center no-print">
                 <button onclick="resetApp()" class="w-full sm:w-auto px-8 py-3.5 glass-card hover:bg-white/20 text-white font-bold rounded-2xl transition-all flex items-center justify-center space-x-2">
                     <i class="fa-solid fa-rotate-right"></i>
@@ -427,15 +419,12 @@
         /* -------------------------------------------------------------
          * DATA & STATE MANAGEMENT
          * ------------------------------------------------------------- */
-        const TREES_OPTIONS = [
-            { id: 'mangga', name: 'Pohon Mangga', icon: 'fa-tree', tag: 'Buah Manis', desc: 'Cocok untuk pekarangan rumah' },
-            { id: 'jambu', name: 'Jambu Air Mini', icon: 'fa-apple-whole', tag: 'Tabulampot', desc: 'Bisa berbuah di pot mini' },
-            { id: 'sukulen', name: 'Sukulen Indoor', icon: 'fa-seedling', tag: 'Kamar/Meja', desc: 'Mudah dirawat & estetis' },
-            { id: 'ketapang', name: 'Ketapang Kencana', icon: 'fa-leaf', tag: 'Peneduh', desc: 'Pohon peneduh rindang' },
-            { id: 'lidah-mertua', name: 'Lidah Mertua', icon: 'fa-plant-wilt', tag: 'Pemurni Udara', desc: 'Menyerap polusi dalam ruang' }
+        const PRIZE_OPTIONS = [
+            { id: 'pot_tanaman', name: 'Pot dan Tanaman', icon: 'fa-tree', tag: 'Paket Lengkap', desc: 'Set pot eco lengkap dengan tanaman' },
+            { id: 'pot_saja', name: 'Pot Saja', icon: 'fa-jar', tag: 'Daur Ulang', desc: 'Pot ramah lingkungan siap pakai' },
+            { id: 'kompos', name: 'Pupuk Kompos', icon: 'fa-recycle', tag: 'Organik', desc: 'Pupuk organik nutrisi tanah' }
         ];
 
-        // BANK SOAL LENGKAP (Diacak setiap sesi main)
         const ALL_QUIZ_QUESTIONS = [
             {
                 category: 'Penguraian Sampah',
@@ -491,71 +480,15 @@
                     { text: 'Pohon menghentikan panas matahari secara total', correct: false }
                 ],
                 explanation: 'Satu pohon dewasa mampu menghasilkan oksigen harian yang cukup untuk kebutuhan 2 orang sekaligus serta menyerap gas karbon!'
-            },
-            {
-                category: 'Polusi Plastik Laut',
-                question: 'Apa bahaya utama pecahan mikroplastik di lautan terhadap rantai makanan manusia?',
-                options: [
-                    { text: 'Termakan oleh ikan lalu dikonsumsi manusia', correct: true },
-                    { text: 'Membuat air laut menjadi tawar', correct: false },
-                    { text: 'Membuat gelombang laut makin besar', correct: false },
-                    { text: 'Mengubah warna air laut menjadi hijau', correct: false }
-                ],
-                explanation: 'Mikroplastik yang tertelan oleh biota laut dapat masuk ke tubuh manusia saat kita mengonsumsi makanan laut (seafood).'
-            },
-            {
-                category: 'Efek Rumah Kaca',
-                question: 'Gas utama yang dihasilkan dari pembusukan sampah organik di TPA yang terbuka dan memicu pemanasan global adalah...',
-                options: [
-                    { text: 'Gas Metana (CH4)', correct: true },
-                    { text: 'Gas Oksigen (O2)', correct: false },
-                    { text: 'Gas Helium (He)', correct: false },
-                    { text: 'Gas Nitrogen (N2)', correct: false }
-                ],
-                explanation: 'Penumpukan sampah organik di TPA tanpa diolah menghasilkan gas Metana yang daya tangkap panasnya 28x lebih kuat dari CO2!'
-            },
-            {
-                category: 'Gaya Hidup Zero Waste',
-                question: 'Apa langkah pertama terbaik dalam mempraktikkan gaya hidup minim sampah (Zero Waste)?',
-                options: [
-                    { text: 'Menolak kantong plastik sekali pakai saat berbelanja', correct: true },
-                    { text: 'Membakar semua sampah rumah tangga di pekarangan', correct: false },
-                    { text: 'Membeli lebih banyak barang kemasan plastik', correct: false },
-                    { text: 'Membuang sampah langsung ke sungai', correct: false }
-                ],
-                explanation: 'Refuse (Menolak) plastik sekali pakai saat berbelanja adalah benteng pertama pencegahan penumpukan sampah.'
-            },
-            {
-                category: 'Pengolahan Minyak Jelantah',
-                question: 'Minyak goreng bekas (jelantah) yang dikumpulkan dapat didaur ulang menjadi produk bermanfaat berupa...',
-                options: [
-                    { text: 'Biodiesel dan Sabun Cuci', correct: true },
-                    { text: 'Air minum kemasan', correct: false },
-                    { text: 'Plastik pembungkus makanan', correct: false },
-                    { text: 'Oli mesin kendaraan bermotor', correct: false }
-                ],
-                explanation: 'Minyak jelantah yang dibuang sembarangan bisa menyumbat saluran air, padahal bisa diolah menjadi biodiesel ramah lingkungan!'
-            },
-            {
-                category: 'Kertas & Hutan',
-                question: 'Mengapa mendaur ulang 1 ton kertas dapat menyelamatkan lingkungan?',
-                options: [
-                    { text: 'Menyelamatkan sekitar 17 pohon dewasa dari penebangan', correct: true },
-                    { text: 'Menghentikan hujan asam di seluruh bumi', correct: false },
-                    { text: 'Menghasilkan bahan bakar bensin gratis', correct: false },
-                    { text: 'Menghilangkan polusi asap pabrik', correct: false }
-                ],
-                explanation: 'Daur ulang kertas menghemat penggunaan kayu pohon hulu serta menghemat energi & air produksi hingga 50%!'
             }
         ];
 
-        // Application State Variables
         let currentUser = {
             name: '',
             contact: '',
-            preferredTree: ''
+            preferredPrize: ''
         };
-        let activeQuizQuestions = []; // Akankah diisi 5 soal acak
+        let activeQuizQuestions = [];
         let currentQuestionIndex = 0;
         let userScore = 0;
         let timerInterval = null;
@@ -563,7 +496,7 @@
         let soundEnabled = true;
 
         /* -------------------------------------------------------------
-         * AUDIO SYNTHESIS ENGINE (No External Audio File Dependencies)
+         * AUDIO SYNTHESIS ENGINE
          * ------------------------------------------------------------- */
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         let audioCtx = null;
@@ -595,23 +528,22 @@
                     osc.stop(now + 0.05);
                 } else if (type === 'correct') {
                     osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(523.25, now); // C5
-                    osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
-                    osc.frequency.setValueAtTime(783.99, now + 0.16); // G5
+                    osc.frequency.setValueAtTime(523.25, now);
+                    osc.frequency.setValueAtTime(659.25, now + 0.08);
+                    osc.frequency.setValueAtTime(783.99, now + 0.16);
                     gain.gain.setValueAtTime(0.3, now);
                     gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
                     osc.start(now);
                     osc.stop(now + 0.3);
-                } else if (type === 'wrong') {
+                } else if (type === 'wrong' || type === 'zonk') {
                     osc.type = 'sawtooth';
                     osc.frequency.setValueAtTime(220, now);
-                    osc.frequency.setValueAtTime(180, now + 0.1);
+                    osc.frequency.setValueAtTime(140, now + 0.15);
                     gain.gain.setValueAtTime(0.3, now);
-                    gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
                     osc.start(now);
-                    osc.stop(now + 0.25);
+                    osc.stop(now + 0.3);
                 } else if (type === 'win') {
-                    // Arpeggio sound
                     const notes = [523.25, 659.25, 783.99, 1046.50];
                     notes.forEach((freq, idx) => {
                         const noteOsc = audioCtx.createOscillator();
@@ -626,7 +558,7 @@
                     });
                 }
             } catch (e) {
-                console.log('Audio playback prevented or unsupported');
+                console.log('Audio error');
             }
         }
 
@@ -645,20 +577,20 @@
          * INITIALIZATION & UI RENDERING
          * ------------------------------------------------------------- */
         window.onload = function() {
-            renderTreeSelectionOptions();
+            renderPrizeSelectionOptions();
             initLeafCanvas();
         };
 
-        function renderTreeSelectionOptions() {
-            const container = document.getElementById('tree-select-container');
-            container.innerHTML = TREES_OPTIONS.map((tree, idx) => `
+        function renderPrizeSelectionOptions() {
+            const container = document.getElementById('prize-select-container');
+            container.innerHTML = PRIZE_OPTIONS.map((prize, idx) => `
                 <label class="cursor-pointer group">
-                    <input type="radio" name="preferred-tree" value="${tree.name}" ${idx === 0 ? 'checked' : ''} class="peer sr-only">
-                    <div class="p-3 rounded-2xl border border-brand-500/30 bg-brand-900/40 peer-checked:bg-gradient-to-br peer-checked:from-brand-500/40 peer-checked:to-accent-gold/20 peer-checked:border-accent-gold peer-checked:ring-2 peer-checked:ring-accent-gold/50 transition-all text-center h-full flex flex-col justify-between items-center">
-                        <i class="fa-solid ${tree.icon} text-2xl text-brand-300 peer-checked:text-accent-gold mb-1 group-hover:scale-110 transition-transform"></i>
+                    <input type="radio" name="preferred-prize" value="${prize.name}" ${idx === 0 ? 'checked' : ''} class="peer sr-only">
+                    <div class="p-3.5 rounded-2xl border border-brand-500/30 bg-brand-900/40 peer-checked:bg-gradient-to-br peer-checked:from-brand-500/40 peer-checked:to-accent-gold/20 peer-checked:border-accent-gold peer-checked:ring-2 peer-checked:ring-accent-gold/50 transition-all text-center h-full flex flex-col justify-between items-center">
+                        <i class="fa-solid ${prize.icon} text-2xl text-brand-300 peer-checked:text-accent-gold mb-1 group-hover:scale-110 transition-transform"></i>
                         <div>
-                            <p class="text-xs font-bold text-white">${tree.name}</p>
-                            <span class="text-[9px] text-brand-200/70 block">${tree.tag}</span>
+                            <p class="text-xs font-bold text-white">${prize.name}</p>
+                            <span class="text-[9px] text-brand-200/70 block mt-0.5">${prize.desc}</span>
                         </div>
                     </div>
                 </label>
@@ -666,7 +598,7 @@
         }
 
         /* -------------------------------------------------------------
-         * TAHAP 1: REGISTRASI HANDLER
+         * REGISTRASI HANDLER
          * ------------------------------------------------------------- */
         function handleStartQuiz(event) {
             event.preventDefault();
@@ -674,31 +606,28 @@
 
             const nameInput = document.getElementById('user-name').value.trim();
             const contactInput = document.getElementById('user-contact').value.trim();
-            const treeSelected = document.querySelector('input[name="preferred-tree"]:checked').value;
+            const prizeSelected = document.querySelector('input[name="preferred-prize"]:checked').value;
 
             if (!nameInput || !contactInput) return;
 
             currentUser.name = nameInput;
             currentUser.contact = contactInput;
-            currentUser.preferredTree = treeSelected;
+            currentUser.preferredPrize = prizeSelected;
 
-            // ACAK DAN PILIH 5 SOAL DARI BANK SOAL
             activeQuizQuestions = [...ALL_QUIZ_QUESTIONS]
                 .sort(() => 0.5 - Math.random())
                 .slice(0, 5);
 
-            // Transition UI from Step 1 -> Step 2
             document.getElementById('step-register').classList.add('hidden');
             document.getElementById('step-quiz').classList.remove('hidden');
 
-            // Reset Quiz Stats
             currentQuestionIndex = 0;
             userScore = 0;
             loadQuestion(currentQuestionIndex);
         }
 
         /* -------------------------------------------------------------
-         * TAHAP 2: GAME KUIS LOGIC
+         * KUIS GAME LOGIC
          * ------------------------------------------------------------- */
         function loadQuestion(index) {
             clearInterval(timerInterval);
@@ -711,15 +640,13 @@
             document.getElementById('quiz-question-text').innerText = q.question;
             document.getElementById('quiz-progress-bar').style.width = `${((index) / activeQuizQuestions.length) * 100}%`;
 
-            // Reset Feedback Box
             const feedbackBox = document.getElementById('quiz-feedback-box');
             feedbackBox.classList.add('hidden');
 
-            // Render Options (Dilocat/Diacak urutannya juga)
             const shuffledOptions = [...q.options].sort(() => 0.5 - Math.random());
             
             const optionsContainer = document.getElementById('quiz-options-container');
-            optionsContainer.innerHTML = shuffledOptions.map((opt, optIdx) => `
+            optionsContainer.innerHTML = shuffledOptions.map((opt) => `
                 <button onclick="handleSelectAnswer(this, ${opt.correct})" class="quiz-opt-btn w-full p-3.5 sm:p-4 rounded-2xl bg-brand-900/60 hover:bg-brand-800/80 border border-brand-500/30 text-left text-xs sm:text-sm font-semibold text-brand-50 hover:text-white transition-all flex items-center justify-between group">
                     <span>${opt.text}</span>
                     <div class="w-6 h-6 rounded-full border border-brand-400/40 flex items-center justify-center group-hover:border-accent-gold group-hover:bg-accent-gold/20 transition-all">
@@ -728,7 +655,6 @@
                 </button>
             `).join('');
 
-            // Start Timer
             updateTimerDisplay();
             timerInterval = setInterval(() => {
                 timeLeft--;
@@ -801,14 +727,13 @@
             if (currentQuestionIndex < activeQuizQuestions.length) {
                 loadQuestion(currentQuestionIndex);
             } else {
-                // Quiz Complete -> Move to Raffle Stage
                 document.getElementById('quiz-progress-bar').style.width = '100%';
                 finishQuizAndStartRaffle();
             }
         }
 
         /* -------------------------------------------------------------
-         * TAHAP 3: UNDIAN POHON KEBERUNTUNGAN (DENGAN KEMUNGKINAN ZONK)
+         * UNDIAN POHON KEBERUNTUNGAN MURNI ACAK (DENGAN ZONK)
          * ------------------------------------------------------------- */
         function finishQuizAndStartRaffle() {
             document.getElementById('step-quiz').classList.add('hidden');
@@ -818,7 +743,6 @@
             renderInteractiveTreeFruits();
             playSound('win');
 
-            // Trigger light celebratory confetti
             confetti({
                 particleCount: 50,
                 spread: 60,
@@ -830,7 +754,6 @@
             const fruitContainer = document.getElementById('tree-fruits-container');
             fruitContainer.innerHTML = '';
 
-            // Fruit positions relative to tree canvas
             const positions = [
                 { top: '25%', left: '42%' },
                 { top: '35%', left: '28%' },
@@ -842,6 +765,7 @@
             positions.forEach((pos, idx) => {
                 const fruit = document.createElement('div');
                 fruit.className = 'absolute interactive-tree-fruit flex flex-col items-center justify-center';
+                fruit.id = `fruit-btn-${idx}`;
                 fruit.style.top = pos.top;
                 fruit.style.left = pos.left;
                 fruit.setAttribute('onclick', `claimPrize(${idx})`);
@@ -857,92 +781,91 @@
         }
 
         function pickRandomFruit() {
-            const randomIdx = Math.floor(Math.random() * 5);
-            claimPrize(randomIdx);
-        }
-
-        function claimPrize(fruitIndex) {
-            // Peluang Zonk bervariasi tergantung skor (Semakin tinggi skor, peluang Zonk semakin kecil)
-            // Skor 100: Peluang Zonk 10%
-            // Skor 80:  Peluang Zonk 20%
-            // Skor 60:  Peluang Zonk 35%
-            // Skor <60: Peluang Zonk 50%
-            let zonkChance = 0.5;
-            if (userScore >= 100) zonkChance = 0.1;
-            else if (userScore >= 80) zonkChance = 0.2;
-            else if (userScore >= 60) zonkChance = 0.35;
-
-            const isZonk = Math.random() < zonkChance;
-
-            let prizeTitle = "";
-            let prizeDetail = "";
-            let isWin = false;
-
-            if (isZonk) {
-                playSound('wrong');
-                prizeTitle = "💥 ZONK! Belum Beruntung Kali Ini";
-                prizeDetail = "Buah yang kamu petik ternyata kosong/berulat! Jangan berkecil hati, dapatkan Stiker Eco-Hero & silakan coba lagi kuis berikutnya.";
-            } else {
-                playSound('win');
-                isWin = true;
-
-                if (userScore >= 80) {
-                    prizeTitle = `🌱 Grand Prize: Bibit ${currentUser.preferredTree} + Pot Eco!`;
-                    prizeDetail = `Selamat! Berdasarkan skor kuis tinggi Anda (${userScore}), Anda berhak memenangkan bibit ${currentUser.preferredTree} dan Sertifikat Adopsi Pohon.`;
-                } else if (userScore >= 40) {
-                    prizeTitle = `🥬 Hadiah Utama: Paket Benih Tanaman Sayur Mini!`;
-                    prizeDetail = `Hebat! Anda memenangkan benih tanaman konsumsi mini & pot ramah lingkungan serta kupon undian pameran.`;
-                } else {
-                    prizeTitle = `✨ Hadiah Hiburan: Souvenir Daur Ulang Pameran!`;
-                    prizeDetail = `Terima kasih telah berpartisipasi! Ambil souvenir ramah lingkungan & gantungan kunci daur ulang di booth.`;
+            const remainingFruits = [];
+            for(let i=0; i<5; i++) {
+                const f = document.getElementById(`fruit-btn-${i}`);
+                if (f && f.style.display !== 'none') {
+                    remainingFruits.push(i);
                 }
             }
 
-            // Generate Unique Ticket ID
+            if (remainingFruits.length > 0) {
+                const randomIdx = remainingFruits[Math.floor(Math.random() * remainingFruits.length)];
+                claimPrize(randomIdx);
+            } else {
+                renderInteractiveTreeFruits();
+                pickRandomFruit();
+            }
+        }
+
+        function claimPrize(fruitIndex) {
+            // Sembunyikan buah yang dipetik
+            const pickedFruit = document.getElementById(`fruit-btn-${fruitIndex}`);
+            if (pickedFruit) pickedFruit.style.display = 'none';
+
+            // Opsi Hadiah Acak (Termasuk Zonk)
+            const RANDOM_PRIZES = [
+                { type: 'pot_tanaman', title: '🌱 Paket Utama: Pot + Tanaman!', desc: 'Selamat! Anda memenangkan 1 Set Pot Eco Daur Ulang beserta Bibit Tanaman Segar!' },
+                { type: 'pot_saja', title: '🪴 Paket Seedling: Pot Ramah Lingkungan!', desc: 'Selamat! Anda berhak membawa pulang 1 Pot Eco Daur Ulang Spesial untuk tanamanmu!' },
+                { type: 'kompos', title: '🍂 Paket Edukasi: Pupuk Kompos Organik!', desc: 'Selamat! Anda mendapatkan 1 Kantong Pupuk Kompos Organik Berkualitas tinggi!' },
+                { type: 'zonk', title: 'ZONK', desc: 'Belum Beruntung' }
+            ];
+
+            // Pengacakan Murni 100%
+            const result = RANDOM_PRIZES[Math.floor(Math.random() * RANDOM_PRIZES.length)];
+
+            if (result.type === 'zonk') {
+                playSound('zonk');
+                document.getElementById('zonk-modal').classList.remove('hidden');
+                return;
+            }
+
+            // Jika Menang Hadiah
+            playSound('win');
             const ticketId = 'ECO-' + Math.floor(1000 + Math.random() * 9000);
 
-            // Populate Digital Printable Ticket
             document.getElementById('ticket-id-tag').innerText = '#' + ticketId;
             document.getElementById('ticket-user-name').innerText = currentUser.name;
             document.getElementById('ticket-user-contact').innerText = currentUser.contact;
             document.getElementById('ticket-user-score').innerText = `${userScore} Poin`;
-            document.getElementById('ticket-prize-name').innerText = prizeTitle;
-            document.getElementById('ticket-prize-desc').innerText = prizeDetail;
+            document.getElementById('ticket-prize-name').innerText = result.title;
+            document.getElementById('ticket-prize-desc').innerText = result.desc;
 
-            // QR Code Data Payload
             const qrContainer = document.getElementById('qrcode-box');
             qrContainer.innerHTML = '';
             const safeName = currentUser.name.length > 20 ? currentUser.name.substring(0, 18) + '..' : currentUser.name;
-            const qrData = `ECOQUEST|ID:${ticketId}|NAME:${safeName}|STATUS:${isWin ? 'WIN' : 'ZONK'}`;
+            const qrData = `ECOQUEST|ID:${ticketId}|NAME:${safeName}|PRIZE:${result.type}`;
 
             new QRCode(qrContainer, {
                 text: qrData,
                 width: 90,
                 height: 90,
-                colorDark : isWin ? "#14532d" : "#991b1b",
+                colorDark : "#14532d",
                 colorLight : "#ffffff",
                 correctLevel : QRCode.CorrectLevel.M
             });
 
-            // Transition Stage -> Ticket Stage
             document.getElementById('step-raffle').classList.add('hidden');
             document.getElementById('step-ticket').classList.remove('hidden');
 
-            if (isWin) {
-                confetti({
-                    particleCount: 120,
-                    spread: 100,
-                    origin: { y: 0.5 }
-                });
-            }
+            confetti({
+                particleCount: 120,
+                spread: 100,
+                origin: { y: 0.5 }
+            });
+        }
+
+        function closeZonkModal() {
+            playSound('click');
+            document.getElementById('zonk-modal').classList.add('hidden');
         }
 
         /* -------------------------------------------------------------
-         * RESET APP FOR NEXT PARTICIPANT
+         * RESET APP
          * ------------------------------------------------------------- */
         function resetApp() {
             playSound('click');
-            currentUser = { name: '', contact: '', preferredTree: '' };
+            currentUser = { name: '', contact: '', preferredPrize: '' };
             currentQuestionIndex = 0;
             userScore = 0;
 
@@ -952,7 +875,7 @@
         }
 
         /* -------------------------------------------------------------
-         * DYNAMIC FALLING LEAVES CANVAS ANIMATION
+         * FALLING LEAVES CANVAS ANIMATION
          * ------------------------------------------------------------- */
         function initLeafCanvas() {
             const canvas = document.getElementById('leaf-canvas');
@@ -999,7 +922,6 @@
                     ctx.rotate((leaf.rotation * Math.PI) / 180);
                     ctx.globalAlpha = leaf.opacity;
 
-                    // Draw Leaf Shape
                     ctx.fillStyle = '#4ade80';
                     ctx.beginPath();
                     ctx.moveTo(0, -leaf.size);
