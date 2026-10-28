@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoQuest - Game Kuis & Undian Pohon Keberuntungan</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- QRCode Generator Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                            dark: '#052e16'
+                        },
+                        accent: {
+                            gold: '#f59e0b',
+                            warm: '#d97706'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'pulse-glow': 'pulseGlow 2s infinite',
+                        'shake': 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both',
+                        'bounce-short': 'bounceShort 0.6s ease infinite alternate'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-10px) rotate(2deg)' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { opacity: 1, filter: 'drop-shadow(0 0 15px rgba(34, 197, 94, 0.6))' },
+                            '50%': { opacity: 0.85, filter: 'drop-shadow(0 0 25px rgba(245, 158, 11, 0.8))' },
+                        },
+                        shake: {
+                            '10%, 90%': { transform: 'translate3d(-1px, 0, 0)' },
+                            '20%, 80%': { transform: 'translate3d(2px, 0, 0)' },
+                            '30%, 50%, 70%': { transform: 'translate3d(-4px, 0, 0)' },
+                            '40%, 60%': { transform: 'translate3d(4px, 0, 0)' }
+                        },
+                        bounceShort: {
+                            'from': { transform: 'translateY(0)' },
+                            'to': { transform: 'translateY(-12px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #052e16 0%, #14532d 40%, #064e3b 100%);
+            min-height: 100vh;
+            color: #f0fdf4;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism Styles */
+        .glass-card {
+            background: rgba(20, 83, 45, 0.45);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-card-light {
+            background: rgba(255, 255, 255, 0.95);
+            color: #14532d;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Floating Leaves Animation Canvas */
+        #leaf-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .interactive-tree-fruit {
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+        .interactive-tree-fruit:hover {
+            transform: scale(1.25) rotate(10deg);
+            filter: drop-shadow(0 0 12px #f59e0b);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(5, 46, 22, 0.5);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #22c55e;
+            border-radius: 4px;
+        }
+
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 1cm;
+            }
+            body {
+                background: none !important;
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            #leaf-canvas, header, footer, #step-register, #step-quiz, #step-raffle, .no-print {
+                display: none !important;
+            }
+            main {
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            #step-ticket {
+                display: block !important;
+                width: 100% !important;
+            }
+            #printable-ticket {
+                position: static !important;
+                width: 100% !important;
+                box-shadow: none !important;
+                border: 2px solid #15803d !important;
+                background: #ffffff !important;
+                color: #000000 !important;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body class="relative flex flex-col justify-between items-center min-h-screen p-4 sm:p-6 md:p-8">
+
+    <!-- Canvas Background Dedaunan Berjatuhan -->
+    <canvas id="leaf-canvas"></canvas>
+
+    <!-- Header App -->
+    <header class="w-full max-w-3xl flex justify-between items-center z-10 mb-4">
+        <div class="flex items-center space-x-3">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-brand-500 to-accent-gold flex items-center justify-center shadow-lg transform rotate-3 hover:rotate-0 transition-transform">
+                <i class="fa-solid fa-seedling text-white text-2xl"></i>
+            </div>
+            <div>
+                <h1 class="font-extrabold text-xl sm:text-2xl tracking-tight text-white flex items-center gap-2">
+                    EcoQuest <span class="text-xs bg-brand-500/30 text-brand-200 border border-brand-500/50 px-2 py-0.5 rounded-full font-semibold">Expo Edition</span>
+                </h1>
+                <p class="text-xs text-brand-200/80">Pameran Pengelolaan Sampah & Lingkungan</p>
+            </div>
+        </div>
+        <button id="sound-toggle-btn" onclick="toggleSound()" class="w-10 h-10 rounded-full glass-card flex items-center justify-center text-brand-200 hover:text-white transition-colors" title="Bungkam / Nyalakan Suara">
+            <i id="sound-icon" class="fa-solid fa-volume-high"></i>
+        </button>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="w-full max-w-2xl z-10 my-auto">
+
+        <!-- ================= TAHAP 1: REGISTRASI ================= -->
+        <section id="step-register" class="glass-card rounded-3xl p-6 sm:p-8 shadow-2xl transition-all duration-500">
+            <div class="text-center mb-6">
+                <span class="inline-block px-4 py-1.5 bg-brand-500/20 text-brand-300 border border-brand-500/40 rounded-full text-xs font-bold tracking-wide uppercase mb-3">
+                    <i class="fa-solid fa-ticket mr-1.5"></i> Kuis & Undian Pohon Keberuntungan
+                </span>
+                <h2 class="text-2xl sm:text-3xl font-black text-white mb-2">Uji Pengetahuanmu & Memenangkan Pohon!</h2>
+                <p class="text-sm text-brand-100/80 leading-relaxed">
+                    Jawab 5 pertanyaan seputar sampah & lingkungan. Setelah itu, petik buah keberuntungan untuk klaim hadiah bibit pohon atau voucher spesial!
+                </p>
+            </div>
+
+            <form id="form-registration" onsubmit="handleStartQuiz(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-brand-200 mb-1.5" for="user-name">
+                        <i class="fa-solid fa-user mr-1"></i> Nama Lengkap Peserta
+                    </label>
+                    <input type="text" id="user-name" required placeholder="Contoh: Budi Santoso" 
+                        class="w-full px-4 py-3 rounded-xl bg-brand-900/60 border border-brand-500/40 text-white placeholder-brand-200/40 focus:outline-none focus:border-accent-gold focus:ring-2 focus:ring-accent-gold/50 transition-all">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-brand-200 mb-1.5" for="user-contact">
+                        <i class="fa-solid fa-phone-flip mr-1"></i> Nomor WhatsApp / Email
+                    </label>
+                    <input type="text" id="user-contact" required placeholder="Contoh: 08123456789 atau nama@email.com" 
+                        class="w-full px-4 py-3 rounded-xl bg-brand-900/60 border border-brand-500/40 text-white placeholder-brand-200/40 focus:outline-none focus:border-accent-gold focus:ring-2 focus:ring-accent-gold/50 transition-all">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-brand-200 mb-2">
+                        <i class="fa-solid fa-tree mr-1"></i> Pilih Pohon Impian Yang Ingin Kamu Bawa Pulang:
+                    </label>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5" id="tree-select-container">
+                        <!-- Populated dynamically via JS -->
+                    </div>
+                </div>
+
+                <div class="pt-4">
+                    <button type="submit" class="w-full py-4 px-6 bg-gradient-to-r from-brand-500 via-emerald-500 to-accent-gold hover:from-brand-600 hover:to-accent-warm text-brand-dark font-extrabold text-base rounded-2xl shadow-lg shadow-brand-500/30 transform hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center space-x-2 group">
+                        <span>Mulai Kuis Edukasi</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </button>
+                </div>
+            </form>
+        </section>
+
+
+        <!-- ================= TAHAP 2: KUIS GAME ================= -->
+        <section id="step-quiz" class="hidden glass-card rounded-3xl p-6 sm:p-8 shadow-2xl transition-all duration-500 relative overflow-hidden">
+            <!-- Progress & Timer Bar -->
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center space-x-2">
+                    <span id="quiz-question-counter" class="text-xs font-extrabold bg-brand-500/30 text-brand-200 border border-brand-500/50 px-3 py-1 rounded-full">
+                        Soal 1 / 5
+                    </span>
+                    <span id="quiz-score-display" class="text-xs font-extrabold bg-accent-gold/20 text-accent-gold border border-accent-gold/40 px-3 py-1 rounded-full">
+                        Skor: 0
+                    </span>
+                </div>
+
+                <!-- Timer Ring/Box -->
+                <div class="flex items-center space-x-1.5 text-accent-gold font-mono font-bold text-sm bg-black/30 px-3 py-1 rounded-xl border border-white/10">
+                    <i class="fa-solid fa-stopwatch animate-spin" style="animation-duration: 4s;"></i>
+                    <span id="quiz-timer">15s</span>
+                </div>
+            </div>
+
+            <!-- Progress Bar Line -->
+            <div class="w-full bg-brand-900/80 h-2.5 rounded-full overflow-hidden mb-6 border border-white/10">
+                <div id="quiz-progress-bar" class="bg-gradient-to-r from-brand-500 to-accent-gold h-full w-0 transition-all duration-300"></div>
+            </div>
+
+            <!-- Question Card -->
+            <div id="quiz-box" class="space-y-6">
+                <div>
+                    <span id="quiz-category" class="text-xs font-bold text-accent-gold uppercase tracking-wider block mb-1">Kategori</span>
+                    <h3 id="quiz-question-text" class="text-lg sm:text-xl font-bold text-white leading-snug">
+                        Teks Pertanyaan...
+                    </h3>
+                </div>
+
+                <!-- Options Grid -->
+                <div id="quiz-options-container" class="grid grid-cols-1 gap-3">
+                    <!-- Dynamic Answer Buttons -->
+                </div>
+
+                <!-- Explanation / Fun Fact Box (Initially Hidden) -->
+                <div id="quiz-feedback-box" class="hidden p-4 rounded-2xl bg-brand-900/90 border border-brand-400/50 text-xs sm:text-sm space-y-2 animate-float">
+                    <div class="flex items-center space-x-2 font-extrabold text-white" id="feedback-title">
+                        <i class="fa-solid fa-lightbulb text-accent-gold"></i>
+                        <span>Fakta Edukasi!</span>
+                    </div>
+                    <p id="feedback-text" class="text-brand-100 leading-relaxed">Penjelasan fakta...</p>
+                    <button id="btn-next-question" onclick="nextQuestion()" class="mt-2 w-full py-2.5 px-4 bg-brand-500 text-brand-dark font-bold rounded-xl hover:bg-brand-400 transition-colors flex items-center justify-center space-x-1">
+                        <span>Lanjut Ke Soal Berikutnya</span>
+                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= TAHAP 3: UNDIAN POHON (RAFFLE SPIN/PICK) ================= -->
+        <section id="step-raffle" class="hidden glass-card rounded-3xl p-6 sm:p-8 shadow-2xl text-center transition-all duration-500">
+            <div class="mb-4">
+                <span class="inline-block px-4 py-1 bg-accent-gold/20 text-accent-gold border border-accent-gold/40 rounded-full text-xs font-bold tracking-wide uppercase">
+                    🎉 Kuis Selesai! Saatnya Petik Keberuntungan
+                </span>
+                <h2 class="text-2xl sm:text-3xl font-black text-white mt-2">Pohon Keberuntungan EcoQuest</h2>
+                <p id="raffle-subtitle" class="text-xs sm:text-sm text-brand-100/90 mt-1">
+                    Skor Kuis Anda: <span id="final-score-val" class="font-extrabold text-accent-gold text-base">100</span>! Klik/sentuh salah satu buah emas pada pohon di bawah untuk klaim undian hadiahmu!
+                </p>
+            </div>
+
+            <!-- Pohon Interaktif Area -->
+            <div class="relative w-full max-w-md mx-auto my-6 h-64 sm:h-72 bg-gradient-to-b from-brand-900/40 to-brand-950/80 rounded-3xl border border-brand-500/30 overflow-hidden flex items-end justify-center">
+                <!-- SVG Tree Graphic -->
+                <svg viewBox="0 0 200 200" class="w-full h-full object-contain filter drop-shadow-xl">
+                    <!-- Trunk -->
+                    <path d="M 90,200 L 95,120 Q 98,90 100,70 Q 102,90 105,120 L 110,200 Z" fill="#78350f" />
+                    <!-- Foliage Layers -->
+                    <circle cx="100" cy="80" r="55" fill="#15803d" opacity="0.9" />
+                    <circle cx="70" cy="95" r="40" fill="#16a34a" opacity="0.95" />
+                    <circle cx="130" cy="95" r="40" fill="#16a34a" opacity="0.95" />
+                    <circle cx="100" cy="60" r="45" fill="#22c55e" />
+                    <circle cx="85" cy="50" r="25" fill="#4ade80" opacity="0.6" />
+                </svg>
+
+                <!-- Interactive Fruits (Buah Berhadiah) Overlaid on Tree -->
+                <div id="tree-fruits-container" class="absolute inset-0 pointer-events-auto">
+                    <!-- Fruits inserted dynamically by JS -->
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                <p class="text-xs text-brand-200 italic animate-pulse">
+                    ✨ Setiap buah mengandung hadiah menarik! Ketuk buah impianmu.
+                </p>
+                <button id="btn-auto-pick" onclick="pickRandomFruit()" class="px-6 py-2.5 bg-brand-500/20 hover:bg-brand-500/40 text-brand-200 border border-brand-500/40 font-semibold text-xs rounded-full transition-all">
+                    <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Pilihkan Acak Untuk Saya
+                </button>
+            </div>
+        </section>
+
+
+        <!-- ================= TAHAP 4: TIKET DIGITAL / PEMENANG ================= -->
+        <section id="step-ticket" class="hidden transition-all duration-500">
+            <!-- Digital Printable Voucher Card -->
+            <div id="printable-ticket" class="glass-card-light rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden text-brand-900 border-2 border-accent-gold">
+                <!-- Decorative Badge -->
+                <div class="absolute -top-10 -right-10 w-32 h-32 bg-accent-gold/20 rounded-full flex items-end justify-start p-6 pointer-events-none">
+                    <i class="fa-solid fa-award text-accent-gold text-4xl"></i>
+                </div>
+
+                <div class="flex items-center justify-between border-b border-brand-900/10 pb-4 mb-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-brand-700 text-white flex items-center justify-center font-bold text-xl">
+                            <i class="fa-solid fa-leaf"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-extrabold text-lg leading-tight text-brand-900">Tiket Undian Pohon</h3>
+                            <p class="text-xs text-brand-700 font-semibold">EcoQuest Expo Pameran Lingkungan</p>
+                        </div>
+                    </div>
+                    <span id="ticket-id-tag" class="font-mono text-xs bg-brand-100 text-brand-800 px-2.5 py-1 rounded-md font-bold border border-brand-300">
+                        #ECO-0000
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                    <!-- Left Column: User details -->
+                    <div class="sm:col-span-2 space-y-3">
+                        <div>
+                            <span class="text-[10px] font-bold text-brand-600 uppercase tracking-wider block">Nama Pemegang Tiket</span>
+                            <p id="ticket-user-name" class="font-bold text-lg text-brand-950">Nama Peserta</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <span class="text-[10px] font-bold text-brand-600 uppercase tracking-wider block">Kontak</span>
+                                <p id="ticket-user-contact" class="font-semibold text-xs text-brand-900">081234***</p>
+                            </div>
+                            <div>
+                                <span class="text-[10px] font-bold text-brand-600 uppercase tracking-wider block">Skor Kuis</span>
+                                <p id="ticket-user-score" class="font-extrabold text-sm text-brand-700">100 Poin</p>
+                            </div>
+                        </div>
+
+                        <!-- Prize Highlight Box -->
+                        <div class="p-3 bg-gradient-to-r from-brand-50 to-amber-50 rounded-2xl border border-accent-gold/40">
+                            <span class="text-[10px] font-extrabold text-accent-warm uppercase tracking-wider block flex items-center gap-1">
+                                <i class="fa-solid fa-gift"></i> Hadiah Undian Dimenangkan:
+                            </span>
+                            <p id="ticket-prize-name" class="font-black text-base text-brand-900 mt-0.5">
+                                Bibit Pohon Mangga + Pot Eco
+                            </p>
+                            <p id="ticket-prize-desc" class="text-xs text-brand-700 mt-1">
+                                Silakan tunjukkan tiket ini ke Panitia Booth EcoQuest untuk pengambilan fisik hadiah.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: QR Code -->
+                    <div class="flex flex-col items-center justify-center p-3 bg-white rounded-2xl border border-brand-200 shadow-inner">
+                        <div id="qrcode-box" class="mb-2"></div>
+                        <span class="text-[9px] font-mono text-brand-600 text-center">Scan Verifikasi Panitia</span>
+                    </div>
+                </div>
+
+                <div class="border-t border-dashed border-brand-900/20 pt-3 flex flex-col sm:flex-row justify-between items-center text-[11px] text-brand-700 gap-2">
+                    <span class="flex items-center gap-1">
+                        <i class="fa-solid fa-location-dot"></i> Main Hall Booth A12 - Pameran Daur Ulang
+                    </span>
+                    <span class="font-medium">Berlaku Selama Pameran Berlangsung</span>
+                </div>
+            </div>
+
+            <!-- Action Buttons for Booth / User -->
+            <div class="mt-6 flex justify-center no-print">
+                <button onclick="resetApp()" class="w-full sm:w-auto px-8 py-3.5 glass-card hover:bg-white/20 text-white font-bold rounded-2xl transition-all flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>Peserta Berikutnya / Main Lagi</span>
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full max-w-3xl text-center text-xs text-brand-200/60 z-10 mt-6 pb-2">
+        <p>© 2026 EcoQuest Pameran Pengelolaan Sampah & Lingkungan. Mari Hijaukan Bumi Bersama!</p>
+    </footer>
+
+
+    <!-- ================= JAVASCRIPT LOGIC ================= -->
+    <script>
+        /* -------------------------------------------------------------
+         * DATA & STATE MANAGEMENT
+         * ------------------------------------------------------------- */
+        const TREES_OPTIONS = [
+            { id: 'mangga', name: 'Pohon Mangga', icon: 'fa-tree', tag: 'Buah Manis', desc: 'Cocok untuk pekarangan rumah' },
+            { id: 'jambu', name: 'Jambu Air Mini', icon: 'fa-apple-whole', tag: 'Tabulampot', desc: 'Bisa berbuah di pot mini' },
+            { id: 'sukulen', name: 'Sukulen Indoor', icon: 'fa-seedling', tag: 'Kamar/Meja', desc: 'Mudah dirawat & estetis' },
+            { id: 'ketapang', name: 'Ketapang Kencana', icon: 'fa-leaf', tag: 'Peneduh', desc: 'Pohon peneduh rindang' },
+            { id: 'lidah-mertua', name: 'Lidah Mertua', icon: 'fa-plant-wilt', tag: 'Pemurni Udara', desc: 'Menyerap polusi dalam ruang' }
+        ];
+
+        // BANK SOAL LENGKAP (Diacak setiap sesi main)
+        const ALL_QUIZ_QUESTIONS = [
+            {
+                category: 'Penguraian Sampah',
+                question: 'Berapa lama waktu yang dibutuhkan oleh sebuah botol plastik kemasan untuk dapat terurai secara alami di tanah?',
+                options: [
+                    { text: '10 – 50 tahun', correct: false },
+                    { text: '100 – 200 tahun', correct: false },
+                    { text: '450 – 500 tahun', correct: true },
+                    { text: 'Kurang dari 1 tahun', correct: false }
+                ],
+                explanation: 'Botol plastik membutuhkan waktu hingga 500 tahun untuk terurai di alam! Karena itu, kurangi penggunaan plastik sekali pakai.'
+            },
+            {
+                category: 'Limbah Berbahaya (B3)',
+                question: 'Mana di antara benda bekas berikut yang TIDAK boleh dibuang ke sampah rumah tangga biasa karena termasuk limbah B3?',
+                options: [
+                    { text: 'Kulit pisang sisa', correct: false },
+                    { text: 'Baterai bekas', correct: true },
+                    { text: 'Kardus bekas makanan', correct: false },
+                    { text: 'Daun-daun kering', correct: false }
+                ],
+                explanation: 'Baterai bekas mengandung racun logam berat yang bisa mencemari air tanah jika dibuang di TPA biasa tanpa penanganan khusus B3!'
+            },
+            {
+                category: 'Pengelolaan Sampah Organik',
+                question: 'Pengolahan sampah organik (seperti sisa sayuran dan daun) menjadi pupuk kaya nutrisi tanah disebut...',
+                options: [
+                    { text: 'Komposting / Pengomposan', correct: true },
+                    { text: 'Insinerasi Pembakaran', correct: false },
+                    { text: 'Daur Ulang Mekanis', correct: false },
+                    { text: 'Klasifikasi Plastik', correct: false }
+                ],
+                explanation: 'Hampir 50% sampah rumah tangga adalah bahan organik yang sangat bermanfaat jika diolah menjadi kompos tanaman!'
+            },
+            {
+                category: 'Konsep 3R (Reduce, Reuse, Recycle)',
+                question: 'Membawa botol minum (tumbler) sendiri dari rumah saat bepergian adalah penerapan nyata dari prinsip...',
+                options: [
+                    { text: 'Recycle (Mendaur ulang)', correct: false },
+                    { text: 'Reduce (Mengurangi sampah)', correct: true },
+                    { text: 'Replace (Mengganti barang)', correct: false },
+                    { text: 'Refuse (Menolak bantuan)', correct: false }
+                ],
+                explanation: 'Reduce (mengurangi penggunaan sejak awal) adalah hirarki tertinggi & paling efektif dalam mencegah timbulan sampah plastik.'
+            },
+            {
+                category: 'Manfaat Pohon Bagi Lingkungan',
+                question: 'Mengapa menanam satu bibit pohon sangat berdampak besar bagi kualitas udara di lingkungan kita?',
+                options: [
+                    { text: 'Pohon menyerap CO2 dan menghasilkan Oksigen (O2)', correct: true },
+                    { text: 'Pohon mengubah gas metana langsung menjadi air', correct: false },
+                    { text: 'Pohon menghilangkan gaya gravitasi udara', correct: false },
+                    { text: 'Pohon menghentikan panas matahari secara total', correct: false }
+                ],
+                explanation: 'Satu pohon dewasa mampu menghasilkan oksigen harian yang cukup untuk kebutuhan 2 orang sekaligus serta menyerap gas karbon!'
+            },
+            {
+                category: 'Polusi Plastik Laut',
+                question: 'Apa bahaya utama pecahan mikroplastik di lautan terhadap rantai makanan manusia?',
+                options: [
+                    { text: 'Termakan oleh ikan lalu dikonsumsi manusia', correct: true },
+                    { text: 'Membuat air laut menjadi tawar', correct: false },
+                    { text: 'Membuat gelombang laut makin besar', correct: false },
+                    { text: 'Mengubah warna air laut menjadi hijau', correct: false }
+                ],
+                explanation: 'Mikroplastik yang tertelan oleh biota laut dapat masuk ke tubuh manusia saat kita mengonsumsi makanan laut (seafood).'
+            },
+            {
+                category: 'Efek Rumah Kaca',
+                question: 'Gas utama yang dihasilkan dari pembusukan sampah organik di TPA yang terbuka dan memicu pemanasan global adalah...',
+                options: [
+                    { text: 'Gas Metana (CH4)', correct: true },
+                    { text: 'Gas Oksigen (O2)', correct: false },
+                    { text: 'Gas Helium (He)', correct: false },
+                    { text: 'Gas Nitrogen (N2)', correct: false }
+                ],
+                explanation: 'Penumpukan sampah organik di TPA tanpa diolah menghasilkan gas Metana yang daya tangkap panasnya 28x lebih kuat dari CO2!'
+            },
+            {
+                category: 'Gaya Hidup Zero Waste',
+                question: 'Apa langkah pertama terbaik dalam mempraktikkan gaya hidup minim sampah (Zero Waste)?',
+                options: [
+                    { text: 'Menolak kantong plastik sekali pakai saat berbelanja', correct: true },
+                    { text: 'Membakar semua sampah rumah tangga di pekarangan', correct: false },
+                    { text: 'Membeli lebih banyak barang kemasan plastik', correct: false },
+                    { text: 'Membuang sampah langsung ke sungai', correct: false }
+                ],
+                explanation: 'Refuse (Menolak) plastik sekali pakai saat berbelanja adalah benteng pertama pencegahan penumpukan sampah.'
+            },
+            {
+                category: 'Pengolahan Minyak Jelantah',
+                question: 'Minyak goreng bekas (jelantah) yang dikumpulkan dapat didaur ulang menjadi produk bermanfaat berupa...',
+                options: [
+                    { text: 'Biodiesel dan Sabun Cuci', correct: true },
+                    { text: 'Air minum kemasan', correct: false },
+                    { text: 'Plastik pembungkus makanan', correct: false },
+                    { text: 'Oli mesin kendaraan bermotor', correct: false }
+                ],
+                explanation: 'Minyak jelantah yang dibuang sembarangan bisa menyumbat saluran air, padahal bisa diolah menjadi biodiesel ramah lingkungan!'
+            },
+            {
+                category: 'Kertas & Hutan',
+                question: 'Mengapa mendaur ulang 1 ton kertas dapat menyelamatkan lingkungan?',
+                options: [
+                    { text: 'Menyelamatkan sekitar 17 pohon dewasa dari penebangan', correct: true },
+                    { text: 'Menghentikan hujan asam di seluruh bumi', correct: false },
+                    { text: 'Menghasilkan bahan bakar bensin gratis', correct: false },
+                    { text: 'Menghilangkan polusi asap pabrik', correct: false }
+                ],
+                explanation: 'Daur ulang kertas menghemat penggunaan kayu pohon hulu serta menghemat energi & air produksi hingga 50%!'
+            }
+        ];
+
+        // Application State Variables
+        let currentUser = {
+            name: '',
+            contact: '',
+            preferredTree: ''
+        };
+        let activeQuizQuestions = []; // Akankah diisi 5 soal acak
+        let currentQuestionIndex = 0;
+        let userScore = 0;
+        let timerInterval = null;
+        let timeLeft = 15;
+        let soundEnabled = true;
+
+        /* -------------------------------------------------------------
+         * AUDIO SYNTHESIS ENGINE (No External Audio File Dependencies)
+         * ------------------------------------------------------------- */
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new AudioCtx();
+            }
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                const now = audioCtx.currentTime;
+
+                if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(400, now);
+                    osc.frequency.exponentialRampToValueAtTime(800, now + 0.05);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.05);
+                    osc.start(now);
+                    osc.stop(now + 0.05);
+                } else if (type === 'correct') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
+                    osc.frequency.setValueAtTime(783.99, now + 0.16); // G5
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.setValueAtTime(180, now + 0.1);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
+                    osc.start(now);
+                    osc.stop(now + 0.25);
+                } else if (type === 'win') {
+                    // Arpeggio sound
+                    const notes = [523.25, 659.25, 783.99, 1046.50];
+                    notes.forEach((freq, idx) => {
+                        const noteOsc = audioCtx.createOscillator();
+                        const noteGain = audioCtx.createGain();
+                        noteOsc.connect(noteGain);
+                        noteGain.connect(audioCtx.destination);
+                        noteOsc.frequency.setValueAtTime(freq, now + (idx * 0.1));
+                        noteGain.gain.setValueAtTime(0.2, now + (idx * 0.1));
+                        noteGain.gain.linearRampToValueAtTime(0.01, now + (idx * 0.1) + 0.25);
+                        noteOsc.start(now + (idx * 0.1));
+                        noteOsc.stop(now + (idx * 0.1) + 0.25);
+                    });
+                }
+            } catch (e) {
+                console.log('Audio playback prevented or unsupported');
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('sound-icon');
+            if (soundEnabled) {
+                icon.className = 'fa-solid fa-volume-high';
+                playSound('click');
+            } else {
+                icon.className = 'fa-solid fa-volume-xmark';
+            }
+        }
+
+        /* -------------------------------------------------------------
+         * INITIALIZATION & UI RENDERING
+         * ------------------------------------------------------------- */
+        window.onload = function() {
+            renderTreeSelectionOptions();
+            initLeafCanvas();
+        };
+
+        function renderTreeSelectionOptions() {
+            const container = document.getElementById('tree-select-container');
+            container.innerHTML = TREES_OPTIONS.map((tree, idx) => `
+                <label class="cursor-pointer group">
+                    <input type="radio" name="preferred-tree" value="${tree.name}" ${idx === 0 ? 'checked' : ''} class="peer sr-only">
+                    <div class="p-3 rounded-2xl border border-brand-500/30 bg-brand-900/40 peer-checked:bg-gradient-to-br peer-checked:from-brand-500/40 peer-checked:to-accent-gold/20 peer-checked:border-accent-gold peer-checked:ring-2 peer-checked:ring-accent-gold/50 transition-all text-center h-full flex flex-col justify-between items-center">
+                        <i class="fa-solid ${tree.icon} text-2xl text-brand-300 peer-checked:text-accent-gold mb-1 group-hover:scale-110 transition-transform"></i>
+                        <div>
+                            <p class="text-xs font-bold text-white">${tree.name}</p>
+                            <span class="text-[9px] text-brand-200/70 block">${tree.tag}</span>
+                        </div>
+                    </div>
+                </label>
+            `).join('');
+        }
+
+        /* -------------------------------------------------------------
+         * TAHAP 1: REGISTRASI HANDLER
+         * ------------------------------------------------------------- */
+        function handleStartQuiz(event) {
+            event.preventDefault();
+            playSound('click');
+
+            const nameInput = document.getElementById('user-name').value.trim();
+            const contactInput = document.getElementById('user-contact').value.trim();
+            const treeSelected = document.querySelector('input[name="preferred-tree"]:checked').value;
+
+            if (!nameInput || !contactInput) return;
+
+            currentUser.name = nameInput;
+            currentUser.contact = contactInput;
+            currentUser.preferredTree = treeSelected;
+
+            // ACAK DAN PILIH 5 SOAL DARI BANK SOAL
+            activeQuizQuestions = [...ALL_QUIZ_QUESTIONS]
+                .sort(() => 0.5 - Math.random())
+                .slice(0, 5);
+
+            // Transition UI from Step 1 -> Step 2
+            document.getElementById('step-register').classList.add('hidden');
+            document.getElementById('step-quiz').classList.remove('hidden');
+
+            // Reset Quiz Stats
+            currentQuestionIndex = 0;
+            userScore = 0;
+            loadQuestion(currentQuestionIndex);
+        }
+
+        /* -------------------------------------------------------------
+         * TAHAP 2: GAME KUIS LOGIC
+         * ------------------------------------------------------------- */
+        function loadQuestion(index) {
+            clearInterval(timerInterval);
+            timeLeft = 15;
+
+            const q = activeQuizQuestions[index];
+            document.getElementById('quiz-question-counter').innerText = `Soal ${index + 1} / ${activeQuizQuestions.length}`;
+            document.getElementById('quiz-score-display').innerText = `Skor: ${userScore}`;
+            document.getElementById('quiz-category').innerText = q.category;
+            document.getElementById('quiz-question-text').innerText = q.question;
+            document.getElementById('quiz-progress-bar').style.width = `${((index) / activeQuizQuestions.length) * 100}%`;
+
+            // Reset Feedback Box
+            const feedbackBox = document.getElementById('quiz-feedback-box');
+            feedbackBox.classList.add('hidden');
+
+            // Render Options (Dilocat/Diacak urutannya juga)
+            const shuffledOptions = [...q.options].sort(() => 0.5 - Math.random());
+            
+            const optionsContainer = document.getElementById('quiz-options-container');
+            optionsContainer.innerHTML = shuffledOptions.map((opt, optIdx) => `
+                <button onclick="handleSelectAnswer(this, ${opt.correct})" class="quiz-opt-btn w-full p-3.5 sm:p-4 rounded-2xl bg-brand-900/60 hover:bg-brand-800/80 border border-brand-500/30 text-left text-xs sm:text-sm font-semibold text-brand-50 hover:text-white transition-all flex items-center justify-between group">
+                    <span>${opt.text}</span>
+                    <div class="w-6 h-6 rounded-full border border-brand-400/40 flex items-center justify-center group-hover:border-accent-gold group-hover:bg-accent-gold/20 transition-all">
+                        <i class="fa-solid fa-arrow-right text-[10px] opacity-0 group-hover:opacity-100 text-accent-gold"></i>
+                    </div>
+                </button>
+            `).join('');
+
+            // Start Timer
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    handleTimeOut();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            document.getElementById('quiz-timer').innerText = `${timeLeft}s`;
+        }
+
+        function handleSelectAnswer(btnElement, isCorrect) {
+            clearInterval(timerInterval);
+            const q = activeQuizQuestions[currentQuestionIndex];
+
+            const optionBtns = document.querySelectorAll('.quiz-opt-btn');
+            optionBtns.forEach(btn => {
+                btn.disabled = true;
+            });
+
+            if (isCorrect) {
+                btnElement.classList.remove('bg-brand-900/60');
+                btnElement.classList.add('bg-brand-600', 'border-brand-400', 'text-white', 'scale-[1.01]');
+                btnElement.innerHTML += ' <i class="fa-solid fa-circle-check text-white text-base ml-2"></i>';
+                userScore += 20;
+                playSound('correct');
+            } else {
+                btnElement.classList.remove('bg-brand-900/60');
+                btnElement.classList.add('bg-red-600/80', 'border-red-400', 'text-white', 'animate-shake');
+                btnElement.innerHTML += ' <i class="fa-solid fa-circle-xmark text-white text-base ml-2"></i>';
+                playSound('wrong');
+            }
+
+            document.getElementById('quiz-score-display').innerText = `Skor: ${userScore}`;
+            showFeedback(isCorrect, q.explanation);
+        }
+
+        function handleTimeOut() {
+            const q = activeQuizQuestions[currentQuestionIndex];
+            const optionBtns = document.querySelectorAll('.quiz-opt-btn');
+            optionBtns.forEach(btn => {
+                btn.disabled = true;
+            });
+            playSound('wrong');
+            showFeedback(false, "Waktu habis! " + q.explanation);
+        }
+
+        function showFeedback(isCorrect, explanation) {
+            const feedbackBox = document.getElementById('quiz-feedback-box');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackText = document.getElementById('feedback-text');
+
+            if (isCorrect) {
+                feedbackTitle.innerHTML = '<i class="fa-solid fa-circle-check text-brand-400"></i><span>Jawaban Tepat! (+20 Poin)</span>';
+            } else {
+                feedbackTitle.innerHTML = '<i class="fa-solid fa-circle-info text-accent-gold"></i><span>Informasi Edukasi</span>';
+            }
+
+            feedbackText.innerText = explanation;
+            feedbackBox.classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            playSound('click');
+            currentQuestionIndex++;
+            if (currentQuestionIndex < activeQuizQuestions.length) {
+                loadQuestion(currentQuestionIndex);
+            } else {
+                // Quiz Complete -> Move to Raffle Stage
+                document.getElementById('quiz-progress-bar').style.width = '100%';
+                finishQuizAndStartRaffle();
+            }
+        }
+
+        /* -------------------------------------------------------------
+         * TAHAP 3: UNDIAN POHON KEBERUNTUNGAN (DENGAN KEMUNGKINAN ZONK)
+         * ------------------------------------------------------------- */
+        function finishQuizAndStartRaffle() {
+            document.getElementById('step-quiz').classList.add('hidden');
+            document.getElementById('step-raffle').classList.remove('hidden');
+
+            document.getElementById('final-score-val').innerText = userScore;
+            renderInteractiveTreeFruits();
+            playSound('win');
+
+            // Trigger light celebratory confetti
+            confetti({
+                particleCount: 50,
+                spread: 60,
+                origin: { y: 0.6 }
+            });
+        }
+
+        function renderInteractiveTreeFruits() {
+            const fruitContainer = document.getElementById('tree-fruits-container');
+            fruitContainer.innerHTML = '';
+
+            // Fruit positions relative to tree canvas
+            const positions = [
+                { top: '25%', left: '42%' },
+                { top: '35%', left: '28%' },
+                { top: '38%', left: '60%' },
+                { top: '50%', left: '36%' },
+                { top: '48%', left: '55%' }
+            ];
+
+            positions.forEach((pos, idx) => {
+                const fruit = document.createElement('div');
+                fruit.className = 'absolute interactive-tree-fruit flex flex-col items-center justify-center';
+                fruit.style.top = pos.top;
+                fruit.style.left = pos.left;
+                fruit.setAttribute('onclick', `claimPrize(${idx})`);
+
+                fruit.innerHTML = `
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-tr from-accent-warm via-accent-gold to-yellow-200 shadow-lg shadow-accent-gold/50 border-2 border-white flex items-center justify-center animate-pulse-glow">
+                        <i class="fa-solid fa-apple-whole text-amber-900 text-lg"></i>
+                    </div>
+                    <span class="text-[10px] font-bold bg-black/60 text-white px-1.5 py-0.5 rounded-full mt-1">Buah #${idx + 1}</span>
+                `;
+                fruitContainer.appendChild(fruit);
+            });
+        }
+
+        function pickRandomFruit() {
+            const randomIdx = Math.floor(Math.random() * 5);
+            claimPrize(randomIdx);
+        }
+
+        function claimPrize(fruitIndex) {
+            // Peluang Zonk bervariasi tergantung skor (Semakin tinggi skor, peluang Zonk semakin kecil)
+            // Skor 100: Peluang Zonk 10%
+            // Skor 80:  Peluang Zonk 20%
+            // Skor 60:  Peluang Zonk 35%
+            // Skor <60: Peluang Zonk 50%
+            let zonkChance = 0.5;
+            if (userScore >= 100) zonkChance = 0.1;
+            else if (userScore >= 80) zonkChance = 0.2;
+            else if (userScore >= 60) zonkChance = 0.35;
+
+            const isZonk = Math.random() < zonkChance;
+
+            let prizeTitle = "";
+            let prizeDetail = "";
+            let isWin = false;
+
+            if (isZonk) {
+                playSound('wrong');
+                prizeTitle = "💥 ZONK! Belum Beruntung Kali Ini";
+                prizeDetail = "Buah yang kamu petik ternyata kosong/berulat! Jangan berkecil hati, dapatkan Stiker Eco-Hero & silakan coba lagi kuis berikutnya.";
+            } else {
+                playSound('win');
+                isWin = true;
+
+                if (userScore >= 80) {
+                    prizeTitle = `🌱 Grand Prize: Bibit ${currentUser.preferredTree} + Pot Eco!`;
+                    prizeDetail = `Selamat! Berdasarkan skor kuis tinggi Anda (${userScore}), Anda berhak memenangkan bibit ${currentUser.preferredTree} dan Sertifikat Adopsi Pohon.`;
+                } else if (userScore >= 40) {
+                    prizeTitle = `🥬 Hadiah Utama: Paket Benih Tanaman Sayur Mini!`;
+                    prizeDetail = `Hebat! Anda memenangkan benih tanaman konsumsi mini & pot ramah lingkungan serta kupon undian pameran.`;
+                } else {
+                    prizeTitle = `✨ Hadiah Hiburan: Souvenir Daur Ulang Pameran!`;
+                    prizeDetail = `Terima kasih telah berpartisipasi! Ambil souvenir ramah lingkungan & gantungan kunci daur ulang di booth.`;
+                }
+            }
+
+            // Generate Unique Ticket ID
+            const ticketId = 'ECO-' + Math.floor(1000 + Math.random() * 9000);
+
+            // Populate Digital Printable Ticket
+            document.getElementById('ticket-id-tag').innerText = '#' + ticketId;
+            document.getElementById('ticket-user-name').innerText = currentUser.name;
+            document.getElementById('ticket-user-contact').innerText = currentUser.contact;
+            document.getElementById('ticket-user-score').innerText = `${userScore} Poin`;
+            document.getElementById('ticket-prize-name').innerText = prizeTitle;
+            document.getElementById('ticket-prize-desc').innerText = prizeDetail;
+
+            // QR Code Data Payload
+            const qrContainer = document.getElementById('qrcode-box');
+            qrContainer.innerHTML = '';
+            const safeName = currentUser.name.length > 20 ? currentUser.name.substring(0, 18) + '..' : currentUser.name;
+            const qrData = `ECOQUEST|ID:${ticketId}|NAME:${safeName}|STATUS:${isWin ? 'WIN' : 'ZONK'}`;
+
+            new QRCode(qrContainer, {
+                text: qrData,
+                width: 90,
+                height: 90,
+                colorDark : isWin ? "#14532d" : "#991b1b",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.M
+            });
+
+            // Transition Stage -> Ticket Stage
+            document.getElementById('step-raffle').classList.add('hidden');
+            document.getElementById('step-ticket').classList.remove('hidden');
+
+            if (isWin) {
+                confetti({
+                    particleCount: 120,
+                    spread: 100,
+                    origin: { y: 0.5 }
+                });
+            }
+        }
+
+        /* -------------------------------------------------------------
+         * RESET APP FOR NEXT PARTICIPANT
+         * ------------------------------------------------------------- */
+        function resetApp() {
+            playSound('click');
+            currentUser = { name: '', contact: '', preferredTree: '' };
+            currentQuestionIndex = 0;
+            userScore = 0;
+
+            document.getElementById('form-registration').reset();
+            document.getElementById('step-ticket').classList.add('hidden');
+            document.getElementById('step-register').classList.remove('hidden');
+        }
+
+        /* -------------------------------------------------------------
+         * DYNAMIC FALLING LEAVES CANVAS ANIMATION
+         * ------------------------------------------------------------- */
+        function initLeafCanvas() {
+            const canvas = document.getElementById('leaf-canvas');
+            const ctx = canvas.getContext('2d');
+
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            const leaves = [];
+            const leafCount = 20;
+
+            for (let i = 0; i < leafCount; i++) {
+                leaves.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 12 + 8,
+                    speedY: Math.random() * 1 + 0.5,
+                    speedX: Math.random() * 0.6 - 0.3,
+                    rotation: Math.random() * 360,
+                    rotationSpeed: Math.random() * 2 - 1,
+                    opacity: Math.random() * 0.5 + 0.3
+                });
+            }
+
+            function animateLeaves() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                leaves.forEach(leaf => {
+                    leaf.y += leaf.speedY;
+                    leaf.x += Math.sin(leaf.y * 0.01) + leaf.speedX;
+                    leaf.rotation += leaf.rotationSpeed;
+
+                    if (leaf.y > canvas.height + 20) {
+                        leaf.y = -20;
+                        leaf.x = Math.random() * canvas.width;
+                    }
+
+                    ctx.save();
+                    ctx.translate(leaf.x, leaf.y);
+                    ctx.rotate((leaf.rotation * Math.PI) / 180);
+                    ctx.globalAlpha = leaf.opacity;
+
+                    // Draw Leaf Shape
+                    ctx.fillStyle = '#4ade80';
+                    ctx.beginPath();
+                    ctx.moveTo(0, -leaf.size);
+                    ctx.quadraticCurveTo(leaf.size, 0, 0, leaf.size);
+                    ctx.quadraticCurveTo(-leaf.size, 0, 0, -leaf.size);
+                    ctx.fill();
+
+                    ctx.restore();
+                });
+
+                requestAnimationFrame(animateLeaves);
+            }
+
+            animateLeaves();
+        }
+    </script>
+</body>
+</html>
